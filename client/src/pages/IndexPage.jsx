@@ -2,7 +2,7 @@
 export default function IndexPage(){
     return(
         <div>
-            test
+            Index Page
         </div>
     )
 }
