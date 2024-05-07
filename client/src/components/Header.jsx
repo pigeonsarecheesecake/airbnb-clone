@@ -27,7 +27,7 @@ export default function Header(){
           </button>
         </div>
         {/* Profile widget */}
-        <Link to={'/login'} className='flex border border-gray-300 gap-2 rounded-full py-2 px-4 shadow-md shadow-gray-300 items-center'>
+        <Link to={user?'/account':'/login'} className='flex border border-gray-300 gap-2 rounded-full py-2 px-4 shadow-md shadow-gray-300 items-center'>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
           </svg>

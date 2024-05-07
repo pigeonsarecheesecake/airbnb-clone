@@ -84,10 +84,17 @@ app.post('/login',async(req,res)=>{
 })
 
 // Route for profile
-app.get('/profile',(req,res)=>{
+app.get('/profile', (req,res)=>{
     const {token} = req.cookies;
-    console.log(req.cookies)
-    res.json({token})
+    if(token){
+        jwt.verify(token,jwtSecret,{},async(err,userData)=>{
+            if (err) throw err
+            const {name,email,_id}=await User.findById(userData.id)
+            res.json({name,email,_id})
+        })
+    }else{
+        res.json(null)
+    }
 })
 
 app.listen(4000)
