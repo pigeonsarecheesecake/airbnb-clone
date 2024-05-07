@@ -20,12 +20,17 @@ const bcrypt = require('bcrypt')
 // Environment Variables
 require('dotenv').config()
 
+// Cookie Parser
+const cookieParser=require('cookie-parser')
+
 // Secrets
 const bcryptSalt=bcrypt.genSaltSync(10);
 // jwt secret used to sign
 const jwtSecret='babhdsbfbsjdfbh'
 
+
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors({
     credentials:true,
     origin:'http://localhost:5173'
@@ -68,7 +73,7 @@ app.post('/login',async(req,res)=>{
                 id:userDoc._id
             },jwtSecret, {}, (err,token)=>{
                 if(err) throw err;
-                res.cookie('token',token).json('pass ok')
+                res.cookie('token',token).json(userDoc)
             })
         }else{
             res.status(422).json('pass not ok')
@@ -76,6 +81,13 @@ app.post('/login',async(req,res)=>{
     }else{
         res.status(422).json('not found')
     }
+})
+
+// Route for profile
+app.get('/profile',(req,res)=>{
+    const {token} = req.cookies;
+    console.log(req.cookies)
+    res.json({token})
 })
 
 app.listen(4000)
