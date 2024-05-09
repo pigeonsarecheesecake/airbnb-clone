@@ -9,6 +9,7 @@ input[type="text"],input[type="password"],input[type="email"]{
 button{
     @apply bg-gray-300;
 }
-button.login{
+/* Any button that's a primary */
+button.primary{
     @apply bg-cherry p-2 w-full text-white rounded-2xl
 }

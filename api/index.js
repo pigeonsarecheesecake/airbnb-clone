@@ -87,6 +87,7 @@ app.post('/login',async(req,res)=>{
 app.get('/profile', (req,res)=>{
     const {token} = req.cookies;
     if(token){
+        // Uses jwt to find user information
         jwt.verify(token,jwtSecret,{},async(err,userData)=>{
             if (err) throw err
             const {name,email,_id}=await User.findById(userData.id)
@@ -97,4 +98,8 @@ app.get('/profile', (req,res)=>{
     }
 })
 
+// Route for logging out
+app.post('/logout',(req,res)=>{
+    res.cookie('token','').json(true )
+})
 app.listen(4000)
