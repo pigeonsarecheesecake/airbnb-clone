@@ -23,11 +23,16 @@ require('dotenv').config()
 // Cookie Parser
 const cookieParser=require('cookie-parser')
 
+// Middleware for uploads 
+app.use('/uploads', express.static(__dirname+'/uploads'))
+
 // Secrets
 const bcryptSalt=bcrypt.genSaltSync(10);
 // jwt secret used to sign
 const jwtSecret='babhdsbfbsjdfbh'
 
+// Image downloader
+const imageDownloader = require('image-downloader')
 
 app.use(express.json())
 app.use(cookieParser())
@@ -102,4 +107,20 @@ app.get('/profile', (req,res)=>{
 app.post('/logout',(req,res)=>{
     res.cookie('token','').json(true )
 })
+console.log(__dirname)
+// Route to upload pics
+app.post('/upload-by-link', async (req,res)=>{
+    const {link} =req.body
+    const newName = 'photo'+Date.now() + '.jpg';
+    await imageDownloader.image(
+        {
+            url:link,
+            // Dirname is current directory which is \\projects\\current-practice\\airbnb-clone\\api\\uploads
+            dest:__dirname + '/uploads' + newName
+        }
+    )
+    res.json(newName)
+})
+
+
 app.listen(4000)
