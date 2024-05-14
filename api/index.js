@@ -23,7 +23,7 @@ require('dotenv').config()
 // Cookie Parser
 const cookieParser=require('cookie-parser')
 
-// Middleware for uploads 
+// Middleware for uploads, express static allows to serve static files from a directory
 app.use('/uploads', express.static(__dirname+'/uploads'))
 
 // Secrets
@@ -107,7 +107,7 @@ app.get('/profile', (req,res)=>{
 app.post('/logout',(req,res)=>{
     res.cookie('token','').json(true )
 })
-console.log(__dirname)
+
 // Route to upload pics
 app.post('/upload-by-link', async (req,res)=>{
     const {link} =req.body
@@ -116,7 +116,7 @@ app.post('/upload-by-link', async (req,res)=>{
         {
             url:link,
             // Dirname is current directory which is \\projects\\current-practice\\airbnb-clone\\api\\uploads
-            dest:__dirname + '/uploads' + newName
+            dest:__dirname + '/uploads/' + newName
         }
     )
     res.json(newName)
