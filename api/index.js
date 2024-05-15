@@ -23,6 +23,12 @@ require('dotenv').config()
 // Cookie Parser
 const cookieParser=require('cookie-parser')
 
+// Multer
+const multer = require('multer')
+
+// File system
+const fs=require('fs')
+
 // Middleware for uploads, express static allows to serve static files from a directory
 app.use('/uploads', express.static(__dirname+'/uploads'))
 
@@ -108,7 +114,7 @@ app.post('/logout',(req,res)=>{
     res.cookie('token','').json(true )
 })
 
-// Route to upload pics
+// Route to upload pics by link, also saves it under uploads
 app.post('/upload-by-link', async (req,res)=>{
     const {link} =req.body
     const newName = 'photo'+Date.now() + '.jpg';
@@ -122,5 +128,19 @@ app.post('/upload-by-link', async (req,res)=>{
     res.json(newName)
 })
 
-
+// Using Multer
+const photosMiddleware=multer({dest:'uploads'})
+// Upload from computer
+app.post('/upload', photosMiddleware.array('photos',100) ,(req,res)=>{
+    const uploadedFiles=[]
+    for(let i=0;i<req.files.length;i++){
+        const {path, originalname} = req.files[i]
+        const parts = originalname.split('.')
+        const ext = parts[parts.length-1]
+        const newPath = path + '.' +ext
+        fs.renameSync(path,newPath)
+        uploadedFiles.push(newPath.replace('uploads/',''))
+    }
+    res.json(req.files)
+})
 app.listen(4000)
