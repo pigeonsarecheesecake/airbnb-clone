@@ -14,6 +14,9 @@ const mongoose = require('mongoose')
 // Models
 const User=require('./models/User')
 
+// Place model
+const Place = require('./models/place.js')
+
 // Bcrypt
 const bcrypt = require('bcrypt')
 
@@ -144,4 +147,29 @@ app.post('/upload', photosMiddleware.array('photos',100) ,(req,res)=>{
     console.log(uploadedFiles)
     res.json(uploadedFiles)
 })
+
+// places
+app.post('/places',  (req, res)=>{
+    // Grabs the cookies object from requests and destructure it and ellicit token property
+    const {token}=req.cookies
+    // Ellicit information regarding the new place inside the request body
+    const {
+        title,address,addedPhotos,description,
+        perks, extraInfo, checkIn, checkOut, maxGuests
+    } = req.body
+    // Use jwt verify to ellicit owner id
+    jwt.verify(token, jwtSecret, {}, async (err,userData)=>{
+        if(err) throw err
+        const placeDoc=await Place.create({
+            owner: userData.id,
+            title, address, addedPhotos, 
+            description, perks, extraInfo,
+            checkIn, checkOut, maxGuests
+        })
+        res.json(placeDoc)
+    })
+    
+})
+
+
 app.listen(4000)

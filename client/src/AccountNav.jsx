@@ -1,37 +1,15 @@
-import { useContext, useState } from "react"
-import { UserContext } from "../UserContext"
-import { Link, Navigate, useParams } from "react-router-dom"
-import axios from "axios"
-import PlacesPage from "./PlacesPage"
+import React from 'react'
+import { useParams, Link, useLocation } from 'react-router-dom'
 
-export default function AccountPage(){
-    const [redirect, setRedirect] = useState(null)
-    const {user,ready,setUser}=useContext(UserContext)
-    // Params
-    let {subpage}=useParams()
-
-    // For button styling, if subpage is null, subpage=profile
-    if(!subpage){
-        subpage = 'profile'
+function AccountNav() {
+    const {pathname} = useLocation()
+    console.log(pathname);
+    // 
+    let subpage = pathname.split('/')?.[2]
+    if(subpage === undefined){
+        subpage='profile'
     }
-
-    // Logout
-    async function logout(){
-        await axios.post('/logout')
-        setRedirect('/')
-        setUser(null)
-    }
-
-    // If user information is not ready, return loading, this is important to display loading 
-    if(!ready){
-        return 'Loading...'
-    }
-
-    // If user information is ready, but user does not exist (no token, user not logged in), redirect to login page
-    if(ready && !user && !redirect){
-        return <Navigate to={'/login'}/>
-    }
-
+    const {action}=useParams()
     // Active Links
     function linkClasses(type=null){
         let classes ='inline-flex gap-1 py-2 px-6 rounded-full'
@@ -43,16 +21,9 @@ export default function AccountPage(){
         }
         return classes
     }
-
-    // 
-    if(redirect){
-        return <Navigate to={redirect}/>
-    }
     return (
         <div>
-            {/* Semantic html */}
-            {/* This is a good way to render different pages inside a page IMPORTANT */}
-           <nav className="w-full flex justify-center mt-8 gap-2 mb-8">
+            <nav className="w-full flex justify-center mt-8 gap-2 mb-8">
             <Link className={linkClasses('profile')} to={'/account'}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
@@ -71,22 +42,9 @@ export default function AccountPage(){
                 </svg>
                 My accommodations
             </Link>
-           </nav>
-           {/* If subpage is profile */}
-           {
-            subpage === 'profile' && (
-                <div className="text-center max-w-lg mx-auto">
-                    Logged in as {user.name} ({user.email})<br />
-                    <button onClick={logout} className="primary max-w-sm mt-2">Logout</button>
-                </div>
-            )
-           }
-           {/* If subpage is acoomodations */}
-           {
-            subpage === 'places' && (
-                <PlacesPage />
-            )
-           }
+            </nav>
         </div>
-    )
+  )
 }
+
+export default AccountNav
