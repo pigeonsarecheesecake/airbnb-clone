@@ -159,7 +159,7 @@ app.post('/places',  (req, res)=>{
     // Ellicit information regarding the new place inside the request body
     const {
         title,address,addedPhotos,description,
-        perks, extraInfo, checkIn, checkOut, maxGuests
+        perks, extraInfo, checkIn, checkOut, maxGuests, price
     } = req.body
     console.log(addedPhotos)
 
@@ -167,7 +167,7 @@ app.post('/places',  (req, res)=>{
     jwt.verify(token, jwtSecret, {}, async (err,userData)=>{
         if(err) throw err
         const placeDoc=await Place.create({
-            owner: userData.id,
+            owner: userData.id,price,
             title, address, photos:addedPhotos, 
             description, perks, extraInfo,
             checkIn, checkOut, maxGuests
@@ -177,7 +177,7 @@ app.post('/places',  (req, res)=>{
 })
 
 // places get (retrieving data)
-app.get('/places',(req,res)=>{
+app.get('/user-places',(req,res)=>{
     const {token} =req.cookies
     jwt.verify(token,jwtSecret,{},async(err,userData)=>{
         // Grab the user id from the token store it under id variable, use this id to find a place
@@ -200,7 +200,7 @@ app.put('/places', async (req,res)=>{
     // Ellicit information regarding the new place inside the request body
     const {
         id,title,address,addedPhotos,description,
-        perks, extraInfo, checkIn, checkOut, maxGuests
+        perks, extraInfo, checkIn, checkOut, maxGuests,price
     } = req.body
 
     jwt.verify(token,jwtSecret,{},async(err,userData)=>{
@@ -211,12 +211,17 @@ app.put('/places', async (req,res)=>{
             placeDoc.set({
                 title, address, photos:addedPhotos, 
                 description, perks, extraInfo,
-                checkIn, checkOut, maxGuests
+                checkIn, checkOut, maxGuests,price
             })
             await placeDoc.save()
             res.json('ok')
         }
     })
+})
+
+// Get all places
+app.get('/places',async (req,res)=>{
+    res.json(await Place.find({}))
 })
 
 app.listen(4000)

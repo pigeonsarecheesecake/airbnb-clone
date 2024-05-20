@@ -20,6 +20,7 @@ function PlacesFormPage() {
     const [checkIn, setCheckIn] = useState('')
     const [checkOut, setCheckOut]=useState('')
     const [maxGuests,setMaxGuests]=useState(1)
+    const [price,setPrice] = useState(100)
     const[redirect,setRedirect]=useState(false)
     
     // Effects
@@ -37,7 +38,8 @@ function PlacesFormPage() {
             setExtraInfo(data.extraInfo)
             setCheckIn(data.checkIn)
             setCheckOut(data.checkOut)
-            setMaxGuests(data.maxGuests)
+            setMaxGuests(data.maxGuests),
+            setPrice(data.price)
         })
     },[id])
 
@@ -73,7 +75,7 @@ function PlacesFormPage() {
             const placeData={
                 title, address, addedPhotos, 
                 description, perks, extraInfo,
-                checkIn, checkOut, maxGuests
+                checkIn, checkOut, maxGuests, price
             }
             // Data is going to be labeled as a variable response data
             await axios.put('/places',{
@@ -129,26 +131,33 @@ function PlacesFormPage() {
             {/* Check in check out times */}
             {preInput('Check in and Check out times','add check in and out')}
             {/* Input Boxes for extra info */}
-            <div className="grid gap-2 sm:grid-cols-3">
+            <div className="grid gap-2 grid-cols-2 md:grid-cols-4">
                 <div>
-                <h3 className="mt-2 -mb-1">Check in time</h3>
-                <input  type="text"
-                        value={checkIn} 
-                        onChange={ev=>setCheckIn(ev.target.value)} 
-                        placeholder="14"/>
+                    <h3 className="mt-2 -mb-1">Check in time</h3>
+                    <input  type="text"
+                            value={checkIn} 
+                            onChange={ev=>setCheckIn(ev.target.value)} 
+                            placeholder="14"/>
                 </div>
                 <div>
-                <h3 className="mt-2 -mb-1">Check out time</h3>
-                <input  type="text" 
-                        value={checkOut} 
-                        onChange={ev=>setCheckOut(ev.target.value)} 
-                        placeholder="11"/>
+                    <h3 className="mt-2 -mb-1">Check out time</h3>
+                    <input  type="text" 
+                            value={checkOut} 
+                            onChange={ev=>setCheckOut(ev.target.value)} 
+                            placeholder="11"/>
                 </div>
                 <div>
-                <h3 className="mt-2 -mb-1">Max Number of Guests</h3>
-                <input  type="number" 
-                        value={maxGuests} 
-                        onChange={ev=>setMaxGuests(ev.target.value)}/>
+                    <h3 className="mt-2 -mb-1">Max Number of Guests</h3>
+                    <input  type="number" 
+                            value={maxGuests} 
+                            onChange={ev=>setMaxGuests(ev.target.value)}/>
+                </div>
+                <div>
+                    <h3 className="mt-2 -mb-1">Price per Night</h3>
+                    <input  type="number"
+                            value={price} 
+                            onChange={ev=>setPrice(ev.target.value)} 
+                            placeholder="14"/>
                 </div>
             </div>
             <button className="primary my-4">Save</button>
