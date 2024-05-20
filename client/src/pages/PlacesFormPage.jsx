@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import PhotosUploader from '../components/PhotosUploader'
 import Perks from '../components/Perks'
 import AccountNav from '../AccountNav'
 import axios from 'axios'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 
 
 function PlacesFormPage() {
     // State
+    const {id} = useParams()
+    console.log(id)
     const [title,setTitle]=useState()
     const [address,setAddress]=useState()
     const [addedPhotos,setAddedPhotos]=useState([])
@@ -20,6 +22,25 @@ function PlacesFormPage() {
     const [maxGuests,setMaxGuests]=useState(1)
     const[redirect,setRedirect]=useState(false)
     
+    // Effects
+    useEffect(()=>{
+        if(!id){
+            return;
+        }
+        axios.get('/places/'+id).then(response=>{
+            const {data}=response;
+            setTitle(data.title)
+            setAddress(data.address)
+            setAddedPhotos(data.photos)
+            setDescription(data.description)
+            setPerks(data.perks)
+            setExtraInfo(data.extraInfo)
+            setCheckIn(data.checkIn)
+            setCheckOut(data.checkOut)
+            setMaxGuests(data.maxGuests)
+        })
+    },[id])
+
     // Function
     function inputHeader(text){
         return(
@@ -43,15 +64,28 @@ function PlacesFormPage() {
     }
 
     // On Submit
-    async function addNewPlace(ev){
-        ev.preventDefault()
-        // Data is going to be labeled as a variable response data
-        await axios.post('/places',{
-        title, address, addedPhotos, 
-        description, perks, extraInfo,
-        checkIn, checkOut, maxGuests
-        })
-        setRedirect(true)
+    async function savePlace(ev){
+        // If place id exists, that means its a put or edit
+        // If place id does not exist, that means it's new place
+        // Only user with the correct owner id can edit a place
+        if(id){
+            ev.preventDefault()
+            const placeData={
+                title, address, addedPhotos, 
+                description, perks, extraInfo,
+                checkIn, checkOut, maxGuests
+            }
+            // Data is going to be labeled as a variable response data
+            await axios.put('/places',{
+                id, ...placeData
+            })
+            setRedirect(true)
+        }else{
+            ev.preventDefault()
+            // Data is going to be labeled as a variable response data
+            await axios.post('/places',placeData)
+            setRedirect(true)
+        }
     }
 
     // If redirect is true, redirect to account places
@@ -62,7 +96,7 @@ function PlacesFormPage() {
     return (
         <div >
             <AccountNav/>
-            <form onSubmit={addNewPlace}>
+            <form onSubmit={savePlace}>
             {/* Title */}
             {preInput('Title','Title for your place. Should be short and catchy in advertisement')}
             <input  type='text' 

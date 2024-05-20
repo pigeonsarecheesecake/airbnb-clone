@@ -186,5 +186,36 @@ app.get('/places',(req,res)=>{
     })
 })
 
+// Places get using id 
+app.get('/places/:id',async (req,res)=>{
+    const {id} = req.params
+    res.json(await Place.findById(id))
+})
+
+// Places put 
+app.put('/places', async (req,res)=>{
+    // Grabs the cookies object from requests and destructure it and ellicit token property
+    const {token}=req.cookies
+
+    // Ellicit information regarding the new place inside the request body
+    const {
+        id,title,address,addedPhotos,description,
+        perks, extraInfo, checkIn, checkOut, maxGuests
+    } = req.body
+
+    jwt.verify(token,jwtSecret,{},async(err,userData)=>{
+        if (err) throw err
+        const placeDoc=await Place.findById(id)
+        if (userData.id === placeDoc.owner.toString()){
+            placeDoc.set({
+                title, address, photos:addedPhotos, 
+                description, perks, extraInfo,
+                checkIn, checkOut, maxGuests
+            })
+            await placeDoc.save()
+            res.json('ok')
+        }
+    })
+})
 
 app.listen(4000)
