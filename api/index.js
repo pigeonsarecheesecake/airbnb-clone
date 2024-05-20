@@ -41,7 +41,8 @@ const bcryptSalt=bcrypt.genSaltSync(10);
 const jwtSecret='babhdsbfbsjdfbh'
 
 // Image downloader
-const imageDownloader = require('image-downloader')
+const imageDownloader = require('image-downloader');
+const { log } = require('console');
 
 app.use(express.json())
 app.use(cookieParser())
@@ -144,31 +145,45 @@ app.post('/upload', photosMiddleware.array('photos',100) ,(req,res)=>{
         fs.renameSync(path,newPath)
         uploadedFiles.push(newPath.replace('uploads\\',''))
     }
-    console.log(uploadedFiles)
     res.json(uploadedFiles)
 })
 
-// places
+// Isnt it better to have a middleware that verifies token instead of defining
+// token verification every endpoint?
+
+// places post (submitting data)
 app.post('/places',  (req, res)=>{
     // Grabs the cookies object from requests and destructure it and ellicit token property
     const {token}=req.cookies
+
     // Ellicit information regarding the new place inside the request body
     const {
         title,address,addedPhotos,description,
         perks, extraInfo, checkIn, checkOut, maxGuests
     } = req.body
+    console.log(addedPhotos)
+
     // Use jwt verify to ellicit owner id
     jwt.verify(token, jwtSecret, {}, async (err,userData)=>{
         if(err) throw err
         const placeDoc=await Place.create({
             owner: userData.id,
-            title, address, addedPhotos, 
+            title, address, photos:addedPhotos, 
             description, perks, extraInfo,
             checkIn, checkOut, maxGuests
         })
         res.json(placeDoc)
     })
-    
+})
+
+// places get (retrieving data)
+app.get('/places',(req,res)=>{
+    const {token} =req.cookies
+    jwt.verify(token,jwtSecret,{},async(err,userData)=>{
+        // Grab the user id from the token store it under id variable, use this id to find a place
+        const {id} = userData
+        res.json(await Place.find({owner:id}))
+    })
 })
 
 

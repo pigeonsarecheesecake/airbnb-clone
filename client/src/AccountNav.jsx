@@ -1,16 +1,17 @@
 import React from 'react'
-import { useParams, Link, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 function AccountNav() {
+    // Grabs the path and store it under pathname, a property 
     const {pathname} = useLocation()
-    console.log(pathname);
-    // 
+    
+    // Ellicits places slug from /account/places 
     let subpage = pathname.split('/')?.[2]
     if(subpage === undefined){
         subpage='profile'
     }
-    const {action}=useParams()
-    // Active Links
+
+    // Active Links, adds styling to the components
     function linkClasses(type=null){
         let classes ='inline-flex gap-1 py-2 px-6 rounded-full'
         // If type and subpage are the same, that means that subpage is being selected
@@ -21,6 +22,7 @@ function AccountNav() {
         }
         return classes
     }
+
     return (
         <div>
             <nav className="w-full flex justify-center mt-8 gap-2 mb-8">
@@ -44,7 +46,7 @@ function AccountNav() {
             </Link>
             </nav>
         </div>
-  )
+    )
 }
 
 export default AccountNav

@@ -30,7 +30,6 @@ function PhotosUploader({addedPhotos,onChange}) {
       })
     })
   }
-
   return (
     <>
         {/* Important, how to submit pics PHOTOS */}

@@ -3,6 +3,9 @@ import { useState } from 'react'
 import PhotosUploader from '../components/PhotosUploader'
 import Perks from '../components/Perks'
 import AccountNav from '../AccountNav'
+import axios from 'axios'
+import { Navigate } from 'react-router-dom'
+
 
 function PlacesFormPage() {
     // State
@@ -15,40 +18,47 @@ function PlacesFormPage() {
     const [checkIn, setCheckIn] = useState('')
     const [checkOut, setCheckOut]=useState('')
     const [maxGuests,setMaxGuests]=useState(1)
-
+    const[redirect,setRedirect]=useState(false)
+    
     // Function
-      // Header and Description helper functions
-  function inputHeader(text){
-    return(
-      <h2 className="text-2xl mt-4">{text}</h2>
-    )
-  }
+    function inputHeader(text){
+        return(
+        <h2 className="text-2xl mt-4">{text}</h2>
+        )
+    }
 
-  function inputDescription(text){
-    return(
-      <p className="text-gray-500 text-sm">{text}</p>
-    )
-  }
+    function inputDescription(text){
+        return(
+        <p className="text-gray-500 text-sm">{text}</p>
+        )
+    }
 
-  function preInput(header,description){
-    return(
-      <>
-        {inputHeader(header)}
-        {inputDescription(description)}
-      </>
-    )
-  }
+    function preInput(header,description){
+        return(
+        <>
+            {inputHeader(header)}
+            {inputDescription(description)}
+        </>
+        )
+    }
 
-  // On Submit
-  async function addNewPlace(ev){
-    ev.preventDefault()
-    // Data is going to be labeled as a variable response data
-    const {data}= await axios.post('/places',{
-      title, address, addedPhotos, 
-      description, perks, extraInfo,
-      checkIn, checkOut, maxGuests
-    })
-  }
+    // On Submit
+    async function addNewPlace(ev){
+        ev.preventDefault()
+        // Data is going to be labeled as a variable response data
+        await axios.post('/places',{
+        title, address, addedPhotos, 
+        description, perks, extraInfo,
+        checkIn, checkOut, maxGuests
+        })
+        setRedirect(true)
+    }
+
+    // If redirect is true, redirect to account places
+    if(redirect){
+        return <Navigate to={'/account/places'}/>
+    }
+
     return (
         <div >
             <AccountNav/>
