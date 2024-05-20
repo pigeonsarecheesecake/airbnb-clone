@@ -207,6 +207,7 @@ app.put('/places', async (req,res)=>{
         if (err) throw err
         const placeDoc=await Place.findById(id)
         if (userData.id === placeDoc.owner.toString()){
+            // Mongoose syntax
             placeDoc.set({
                 title, address, photos:addedPhotos, 
                 description, perks, extraInfo,
