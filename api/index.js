@@ -61,6 +61,16 @@ app.get('/test',(req,res)=>{
     res.json('test')
 })
 
+// Creating promise and not consuming it
+function getUserDataFromRequest(req){
+    return new Promise((resolve,reject)=>{
+        jwt.verify(req.cookies.token,jwtSecret,{},async(err,userData)=>{
+            if(err) throw err;
+            resolve(userData)
+        })
+    })
+}
+
 // Route for registering
 app.post('/register',async (req,res)=>{
     const {name,email,password}=req.body
@@ -228,16 +238,26 @@ app.get('/places',async (req,res)=>{
 })
 
 // Booking
-app.post('/bookings', (req,res)=>{
+app.post('/bookings', async(req,res)=>{
+    const userData = await getUserDataFromRequest(req)
     const {place,checkIn,checkOut,numberOfGuests,name,phone,price
     }=req.body
     Booking.create({
-        place,checkIn,checkOut,numberOfGuests,name,phone,price
+        place,checkIn,checkOut,numberOfGuests,name,phone,price,user:userData.id
     }).then((doc)=>{
         res.json(doc)
     }).catch(e=>{
         throw e
     })
+})
+
+
+// Learn populate, seems important, instead of just having an id, it replaces the property value with the actual document
+app.get('/bookings',async (req,res)=>{
+    const userData = await getUserDataFromRequest(req)
+    res.json(await Booking.find({
+        user:userData.id
+    }).populate('place'))
 })
 
 app.listen(4000)
