@@ -84,6 +84,11 @@ function PlacesFormPage() {
             setRedirect(true)
         }else{
             ev.preventDefault()
+            const placeData={
+                title, address, addedPhotos, 
+                description, perks, extraInfo,
+                checkIn, checkOut, maxGuests, price
+            }
             // Data is going to be labeled as a variable response data
             await axios.post('/places',placeData)
             setRedirect(true)

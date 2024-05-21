@@ -1,17 +1,18 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 
 export default function IndexPage(){
     const [places,setPlaces]=useState([])
     useEffect(()=>{
         axios.get('/places').then(response=>{
-            setPlaces([...response.data,...response.data,...response.data,...response.data])
+            setPlaces(response.data)
         })
     },[])
     return(
         <div className="gap-6 gap-y-8 mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {places.length > 0 && places.map(place=>(
-                <div className="">
+                <Link to={'/place/' +place._id } className="">
                     <div className="bg-gray-500 mb-2 overflow-hidden rounded-2xl flex">
                         {place.photos?.[0] && (
                             // Find out what object-cover aspect-square is
@@ -23,7 +24,7 @@ export default function IndexPage(){
                     <div className="mt-1">
                         <span className="font-bold">${place.price} per night</span>
                     </div>
-                </div>
+                </Link>
             ))}
         </div>
     )
