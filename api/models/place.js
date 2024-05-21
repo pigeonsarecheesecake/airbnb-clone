@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const {Schema} = mongoose
 
 // Place Schema, remember schema is a class of collection, instances of this class will be documents
 const placeSchema = new mongoose.Schema(

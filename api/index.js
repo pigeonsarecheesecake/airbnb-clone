@@ -17,6 +17,9 @@ const User=require('./models/User')
 // Place model
 const Place = require('./models/place.js')
 
+// Booking model
+const Booking = require('./models/Booking.js')
+
 // Bcrypt
 const bcrypt = require('bcrypt')
 
@@ -222,6 +225,19 @@ app.put('/places', async (req,res)=>{
 // Get all places
 app.get('/places',async (req,res)=>{
     res.json(await Place.find({}))
+})
+
+// Booking
+app.post('/bookings', (req,res)=>{
+    const {place,checkIn,checkOut,numberOfGuests,name,phone,price
+    }=req.body
+    Booking.create({
+        place,checkIn,checkOut,numberOfGuests,name,phone,price
+    }).then((doc)=>{
+        res.json(doc)
+    }).catch(e=>{
+        throw e
+    })
 })
 
 app.listen(4000)

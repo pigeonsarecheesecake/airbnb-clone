@@ -97,7 +97,6 @@ const PlacePage = () => {
                     Check-in: {place.checkIn} <br/>
                     Check-out: {place.checkOut} <br/>
                     Max number of guests: {place.maxGuests}
-                    
                 </div>
                 <div className="">
                     <BookingWidget place={place}/>
