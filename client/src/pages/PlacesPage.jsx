@@ -34,7 +34,7 @@ export default function PlacesPage() {
         {places.length > 0 && places.map(place=>(
           // Photos
           // The whole div will redirect user to account/places/userID
-          <Link to={'/account/places/'+place._id} className=" flex gap-4 bg-gray-100 p-4 rounded-2xl">
+          <Link to={'/account/places/'+place._id} className=" flex gap-4 bg-gray-100 p-4 rounded-2xl my-4">
             {/* Photo */}
             <div className="flex w-32 h-32 bg-gray-300 grow shrink-0">
               <PlaceImg place={place}/>

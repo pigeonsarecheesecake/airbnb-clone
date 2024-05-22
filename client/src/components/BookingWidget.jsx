@@ -23,7 +23,7 @@ const BookingWidget = ({place}) => {
     if(checkIn && checkOut){
         numberOfNights=differenceInCalendarDays(new Date(checkOut),new Date(checkIn))
     }
-    
+
     // Function
     async function bookThisPlace(){
         const response = await axios.post('/bookings',{
